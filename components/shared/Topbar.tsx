@@ -1,12 +1,13 @@
-import React from 'react'
+import Image from "next/image";
+import Link from "next/link";
 
-const Topbar = () => {
+export default function Home() {
   return (
-    <div>
-      Topbar
-      Topbar
-    </div>
-  )
+    <nav className="topbar">
+      <Link href='/' className='flex gap-4 items-center'>
+      <Image src="/assets/logo.svg" alt="logo" height={28} width={28}/>
+        <p className="text-heading3-bold text-light-1 max-xs:hidden">Threads</p>
+      </Link>
+    </nav>
+  );
 }
-
-export default Topbar
