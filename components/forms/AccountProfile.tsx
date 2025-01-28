@@ -18,6 +18,8 @@ import { ChangeEvent, useState } from "react"
 import { Textarea } from "../ui/textarea"
 import { useUploadThing } from "@/lib/uploadthing"
 import { isBase64Image } from "@/lib/utils"
+import { updateUser } from "@/lib/actions/user.actions"
+import { usePathname, useRouter } from "next/navigation"
 
 interface Props {
     user: {
@@ -32,6 +34,8 @@ interface Props {
 }
 
 const AccountProfile = ({ user, btnTitle }: Props) => {
+  const router = useRouter()
+  const pathname = usePathname()
     const [files, setFiles ] = useState<Files[]>([])
     const { startUpload } = useUploadThing("media")
 
@@ -71,6 +75,23 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
             values.profile_photo = imgRes[0].fileUrl;
           }
         }
+
+        await updateUser({
+          userId: user.id,
+          username: values.username,
+          name: values.name,
+          bio: values.bio,
+          image: values.profile_photo,
+          path: pathname
+        })
+
+        if (pathname === '/profile/edit'){
+          router.back()
+        }
+        else {
+          router.push('/')
+        }
+
       }
     return (
         <Form {...form}>
@@ -174,4 +195,4 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
     )
 }
 
-export default AccountProfile;
+export default AccountProfile
