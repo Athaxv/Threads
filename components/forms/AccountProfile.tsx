@@ -9,6 +9,7 @@ import {
     FormField,
     FormItem,
     FormLabel,
+    FormMessage,
  } from "../ui/form"
 import { Button } from "../ui/button"
 import { Input } from "../ui/input"
@@ -149,6 +150,7 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
                     className="account-form_input no-focus"
                     {...field}
                     />
+                    <FormMessage/>
                 </FormControl>
               </FormItem>
             )}
@@ -167,6 +169,7 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
                     className="account-form_input no-focus"
                     {...field}
                     />
+                    <FormMessage/>
                 </FormControl>
               </FormItem>
             )}
