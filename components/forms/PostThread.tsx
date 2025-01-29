@@ -11,14 +11,15 @@ import {
     FormMessage,
  } from "../ui/form"
 import { Button } from "../ui/button"
-import { Input } from "../ui/input"
+// import { Input } from "../ui/input"
 import * as z from 'zod';
-import { ChangeEvent } from "react"
+// import { ChangeEvent } from "react"
 import { Textarea } from "../ui/textarea"
-import { updateUser } from "@/lib/actions/user.actions"
+// import { updateUser } from "@/lib/actions/user.actions"
 import { usePathname, useRouter } from "next/navigation"
 import { ThreadVaildation } from "@/lib/validations/Thread"
 import { createThread } from "@/lib/actions/thread.action"
+import { useOrganization } from "@clerk/nextjs"
 
 // interface Props {
 //     user: {
@@ -33,55 +34,58 @@ import { createThread } from "@/lib/actions/thread.action"
 // }
 
 function PostThread({ userId }: { userId: string}) {
-    const router = useRouter()
-    const pathname = usePathname()
+  const router = useRouter();
+  const pathname = usePathname();
 
-    const form = useForm({
-        resolver: zodResolver(ThreadVaildation),
-        defaultValues: {
-            thread: '',
-            accountId: userId,
-        }
-    })
+  const { organization } = useOrganization();
 
-    const onSubmit = async (values: z.infer<typeof ThreadVaildation>) => {
-      await createThread({
-        text: values.thread,
-        author: userId,
-        communityId: null,
-        path: pathname
-      })
+  const form = useForm<z.infer<typeof ThreadVaildation>>({
+    resolver: zodResolver(ThreadVaildation),
+    defaultValues: {
+      thread: "",
+      accountId: userId,
+    },
+  });
 
-      router.push('/')
-    }
+  const onSubmit = async (values: z.infer<typeof ThreadVaildation>) => {
+    await createThread({
+      text: values.thread,
+      author: userId,
+      communityId: organization ? organization.id : null,
+      path: pathname,
+    });
 
-    return (
-        <>
-        <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="mt-10 flex justify-start flex-col gap-10">
+    router.push("/");
+  };
+
+  return (
+    <Form {...form}>
+      <form
+        className='mt-10 flex flex-col justify-start gap-10'
+        onSubmit={form.handleSubmit(onSubmit)}
+      >
         <FormField
-            control={form.control}
-            name="thread"
-            render={({ field }) => (
-              <FormItem className="flex gap-3 w-full flex-col">
-                <FormLabel className="text-base-semibold text-light-2">
-                  Content
-                </FormLabel>
-                <FormControl className="no-focus border border-dark-4 bg-dark-3 text-light-1">
-                  <Textarea 
-                    rows={7}
-                    {...field}
-                    />
-                    <FormMessage/>
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <Button className="bg-primary-500" type="submit"></Button>
-        </form>
-        </Form>
-        </>
-    )
+          control={form.control}
+          name='thread'
+          render={({ field }) => (
+            <FormItem className='flex w-full flex-col gap-3'>
+              <FormLabel className='text-base-semibold text-light-2'>
+                Content
+              </FormLabel>
+              <FormControl className='no-focus border border-dark-4 bg-dark-3 text-light-1'>
+                <Textarea rows={10} {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <Button type='submit' className='bg-primary-500'>
+          Post Thread
+        </Button>
+      </form>
+    </Form>
+  );
 }
 
-export default PostThread
+export default PostThread;
