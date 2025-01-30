@@ -11,14 +11,14 @@ import * as z from 'zod';
 import { Input } from "../ui/input"
 
 interface Props {
-    threadId: string,
-    currentUserImg: string,
-    currentUserId: string
+  threadId: string,
+  currentUserImg: string,
+  currentUserId: string
 }
 
 const Comment = ({ threadId, currentUserImg, currentUserId }: Props) => {
-    const router = useRouter();
-    const pathname = usePathname();
+  const router = useRouter();
+  const pathname = usePathname();
 
   const { organization } = useOrganization();
 
@@ -30,13 +30,13 @@ const Comment = ({ threadId, currentUserImg, currentUserId }: Props) => {
   });
 
   const onSubmit = async (values: z.infer<typeof CommentVaildation>) => {
-    
+
 
     router.push("/");
   };
 
-    return (
-        <Form {...form}>
+  return (
+    <Form {...form}>
       <form
         className='mt-10 flex flex-col justify-start gap-10'
         onSubmit={form.handleSubmit(onSubmit)}
@@ -51,10 +51,10 @@ const Comment = ({ threadId, currentUserImg, currentUserId }: Props) => {
               </FormLabel>
               <FormControl className='no-focus border border-dark-4 bg-dark-3 text-light-1'>
                 <Input
-                 type="text"
-                 placeholder="Comment..."
-                 className="no-focus text-light-1 outline-none"
-                 {...field} />
+                  type="text"
+                  placeholder="Comment..."
+                  className="no-focus text-light-1 outline-none"
+                  {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -66,7 +66,7 @@ const Comment = ({ threadId, currentUserImg, currentUserId }: Props) => {
         </Button>
       </form>
     </Form>
-    )
+  )
 }
 
 export default Comment

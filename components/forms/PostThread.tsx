@@ -2,14 +2,14 @@
 
 import { useForm } from "react-hook-form"
 import { zodResolver } from '@hookform/resolvers/zod'
-import { 
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
- } from "../ui/form"
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../ui/form"
 import { Button } from "../ui/button"
 // import { Input } from "../ui/input"
 import * as z from 'zod';
@@ -33,7 +33,7 @@ import { useOrganization } from "@clerk/nextjs"
 //     btnTitle: string
 // }
 
-function PostThread({ userId }: { userId: string}) {
+function PostThread({ userId }: { userId: string }) {
   const router = useRouter();
   const pathname = usePathname();
 
