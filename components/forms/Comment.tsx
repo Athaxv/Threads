@@ -10,6 +10,7 @@ import { useForm } from "react-hook-form"
 import * as z from 'zod';
 import { Input } from "../ui/input"
 import Image from "next/image"
+import { addCommentToThread } from "@/lib/actions/thread.action"
 
 interface Props {
   threadId: string,
@@ -31,9 +32,9 @@ const Comment = ({ threadId, currentUserImg, currentUserId }: Props) => {
   });
 
   const onSubmit = async (values: z.infer<typeof CommentVaildation>) => {
+    await addCommentToThread(threadId, values.thread, JSON.parse(currentUserId), pathname)
 
-
-    router.push("/");
+    form.reset();
   };
 
   return (
