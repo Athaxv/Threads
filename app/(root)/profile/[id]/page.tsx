@@ -1,5 +1,6 @@
 import PostThread from "@/components/forms/PostThread";
 import ProfileHeader from "@/components/shared/Profileheader";
+import ThreadsTab from "@/components/shared/ThreadsTab";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { profileTabs } from "@/constants";
 import { fetchUser } from "@/lib/actions/user.actions";

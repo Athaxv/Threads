@@ -131,3 +131,24 @@ export async function addCommentToThread(
         throw new Error(`Error adding comment to thread: ${error.message}`)
     }
 }
+
+export async function fetchUserPosts(userId: string) {
+    try {
+        connectDB();
+
+        const threads = await User.findOne({ id: userId })
+            .populate({
+                path: 'threads',
+                model: Thread,
+                populate: {
+                    path: 'author',
+                    model: User,
+                    select: 'name image id'
+                }
+            })
+
+            return threads;
+    } catch (error: any) {
+        throw new Error(`Failed to fetch user posts: ${error.message}`)
+    }
+}
