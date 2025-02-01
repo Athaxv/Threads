@@ -152,3 +152,13 @@ export async function fetchUserPosts(userId: string) {
         throw new Error(`Failed to fetch user posts: ${error.message}`)
     }
 }
+
+export async function fetchUsers({
+    userId,
+    searchString = "",
+    pageNumber = 1,
+    pageSize = 20,
+    sortBy = "desc"
+}: {
+    
+})
