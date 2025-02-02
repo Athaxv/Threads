@@ -5,11 +5,19 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 import { SignedIn, SignOutButton, useAuth } from '@clerk/nextjs'
+import { useClerk } from '@clerk/clerk-react';
 
 const LeftSidebar = () => {
+  const { signOut } = useClerk();
   const router = useRouter()
   const pathName = usePathname()
   const { userId } = useAuth();
+
+  const handleSignOut = () => {
+    signOut(() => {
+      router.push("/sign-in"); // Redirect after sign-out
+    });
+  };
 
   return (
     <section className='custom-scrollbar leftsidebar'>
@@ -41,7 +49,7 @@ const LeftSidebar = () => {
       </div>
       <div className='mt-10 px-6'>
       <SignedIn>
-            <SignOutButton signOutCallback={() => router.push('/sign-in')}>
+            <button onClick={handleSignOut}>
               <div className="flex cursor-pointer gap-4 p-4">
                 <Image
                   src="/assets/logout.svg"
@@ -51,7 +59,7 @@ const LeftSidebar = () => {
                   />
                   <p className='text-light-2 max-lg:hidden'>Logout</p>
               </div>
-            </SignOutButton>
+            </button>
           </SignedIn>
           </div>
     </section>
