@@ -11,9 +11,9 @@ import { connectDB } from "../mongoose";
 
 export async function fetchUser(userId: string) {
   try {
-    connectDB();
+    await connectDB();
 
-    return await User.findOne({ id: userId }).populate({
+    return await User.findOne({ _id: userId }).populate({
       path: "communities",
       model: Community,
     });
@@ -40,10 +40,10 @@ interface Params {
     image,
   }: Params): Promise<void> {
     try {
-      connectDB();
+      await connectDB();
   
       await User.findOneAndUpdate(
-        { id: userId },
+        { _id: userId },
         {
           username: username.toLowerCase(),
           name,
@@ -51,7 +51,7 @@ interface Params {
           image,
           onboarded: true,
         },
-        { upsert: true }
+        { upsert: true, runValidators: true  }
       );
   
       if (path === "/profile/edit") {
@@ -65,7 +65,7 @@ interface Params {
 
 export async function fetchUserPosts(userId: string) {
   try {
-    connectDB();
+    await connectDB();
 
     // Find all threads authored by the user with the given userId
     const threads = await User.findOne({ id: userId }).populate({
@@ -110,7 +110,7 @@ export async function fetchUsers({
   sortBy?: SortOrder;
 }) {
   try {
-    connectDB();
+    await connectDB();
 
     // Calculate the number of users to skip based on the page number and page size.
     const skipAmount = (pageNumber - 1) * pageSize;
@@ -156,7 +156,7 @@ export async function fetchUsers({
 
 export async function getActivity(userId: string) {
   try {
-    connectDB();
+    await connectDB();
 
     // Find all threads created by the user
     const userThreads = await Thread.find({ author: userId });
