@@ -11,9 +11,9 @@ import { connectDB } from "../mongoose";
 
 export async function fetchUser(userId: string) {
   try {
-    await connectDB();
+    connectDB();
 
-    return await User.findOne({ _id: userId }).populate({
+    return await User.findOne({ id: userId }).populate({
       path: "communities",
       model: Community,
     });
@@ -23,49 +23,49 @@ export async function fetchUser(userId: string) {
 }
 
 interface Params {
-    userId: string;
-    username: string;
-    name: string;
-    bio: string;
-    image: string;
-    path: string;
-  }
-  
-  export async function updateUser({
-    userId,
-    bio,
-    name,
-    path,
-    username,
-    image,
-  }: Params): Promise<void> {
-    try {
-      await connectDB();
-  
-      await User.findOneAndUpdate(
-        { _id: userId },
-        {
-          username: username.toLowerCase(),
-          name,
-          bio,
-          image,
-          onboarded: true,
-        },
-        { upsert: true, runValidators: true  }
-      );
-  
-      if (path === "/profile/edit") {
-        revalidatePath(path);
-      }
-    } catch (error: any) {
-      throw new Error(`Failed to create/update user: ${error.message}`);
+  userId: string;
+  username: string;
+  name: string;
+  bio: string;
+  image: string;
+  path: string;
+}
+
+export async function updateUser({
+  userId,
+  bio,
+  name,
+  path,
+  username,
+  image,
+}: Params): Promise<void> {
+  try {
+    connectDB();
+
+    await User.findOneAndUpdate(
+      { id: userId },
+      {
+        username: username.toLowerCase(),
+        name,
+        bio,
+        image,
+        onboarded: true,
+        email: user?.emailAddresses?.[0]?.emailAddress || "", // Ensure email is never null
+      },
+      { upsert: true, new: true, runValidators: true }
+    );
+
+    if (path === "/profile/edit") {
+      revalidatePath(path);
     }
+  } catch (error: any) {
+    throw new Error(`Failed to create/update user: ${error.message}`);
   }
-  
+}
 
 export async function fetchUserPosts(userId: string) {
   try {
-    await connectDB();
+    connectDB();
 
     // Find all threads authored by the user with the given userId
     const threads = await User.findOne({ id: userId }).populate({
@@ -110,7 +110,7 @@ export async function fetchUsers({
   sortBy?: SortOrder;
 }) {
   try {
-    await connectDB();
+    connectDB();
 
     // Calculate the number of users to skip based on the page number and page size.
     const skipAmount = (pageNumber - 1) * pageSize;
@@ -156,7 +156,7 @@ export async function fetchUsers({
 
 export async function getActivity(userId: string) {
   try {
-    await connectDB();
+    connectDB();
 
     // Find all threads created by the user
     const userThreads = await Thread.find({ author: userId });
