@@ -2,7 +2,7 @@
 
 import { FilterQuery, SortOrder } from "mongoose";
 import { revalidatePath } from "next/cache";
-
+import { currentUser } from "@clerk/nextjs/server";
 import Community from "../models/community.model";
 import Thread from "../models/thread.model";
 import User from "../models/user.model";
@@ -29,6 +29,7 @@ interface Params {
   bio: string;
   image: string;
   path: string;
+  user: { emailAddresses?: { emailAddress: string }[] }
 }
 
 export async function updateUser({
@@ -42,6 +43,23 @@ export async function updateUser({
   try {
     connectDB();
 
+    // Fetch current user details from Clerk
+    const user = await currentUser(); 
+
+    console.log("User from Clerk:", user); // Debug log
+
+    if (!user) {
+      throw new Error("User not found in Clerk.");
+    }
+
+    const email = user?.emailAddresses?.[0]?.emailAddress?.trim() || null;
+
+    console.log("Extracted email:", email); // Debug log
+
+    if (!email) {
+      throw new Error("Email is required but not provided.");
+    }
+
     await User.findOneAndUpdate(
       { id: userId },
       {
@@ -50,7 +68,7 @@ export async function updateUser({
         bio,
         image,
         onboarded: true,
-        email: user?.emailAddresses?.[0]?.emailAddress || "", // Ensure email is never null
+        email,
       },
       { upsert: true, new: true, runValidators: true }
     );
@@ -62,6 +80,7 @@ export async function updateUser({
     throw new Error(`Failed to create/update user: ${error.message}`);
   }
 }
+
 
 export async function fetchUserPosts(userId: string) {
   try {

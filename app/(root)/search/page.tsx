@@ -36,7 +36,7 @@ async function Search() {
                                 id={person.id}
                                 name={person.name}
                                 username={person.username}
-                                imgUrl={person.image}
+                                imgUrl={person.image || '/assets/user.svg'}
                                 personType='User'
                             />
                         ))}
